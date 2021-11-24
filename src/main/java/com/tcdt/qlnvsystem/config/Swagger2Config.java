@@ -25,10 +25,10 @@ public class Swagger2Config {
 	@Bean
 	public Docket api1() {
 		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors.basePackage("com.tcdt.qlnvservice.controller.catalog"))
+				.apis(RequestHandlerSelectors.basePackage("com.tcdt.qlnvsystem.controller"))
 				.paths(PathSelectors.regex("/.*")).build().securitySchemes(Lists.newArrayList(apiKey()))
 				.securityContexts(Lists.newArrayList(securityContext())).apiInfo(apiEndPointsInfo())
-				.groupName("Authen");
+				.groupName("System");
 	}
 
 	private ApiInfo apiEndPointsInfo() {
