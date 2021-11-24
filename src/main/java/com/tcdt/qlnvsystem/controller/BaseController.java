@@ -63,7 +63,7 @@ public class BaseController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> T mapToClass(Map data, Class cls) {
 		try {
-			Object obj = cls.newInstance();
+			Object obj = cls.getDeclaredConstructor().newInstance();
 			for (Field f : cls.getDeclaredFields()) {
 				f.setAccessible(true);
 				if (data.get(f.getName()) != null) {
