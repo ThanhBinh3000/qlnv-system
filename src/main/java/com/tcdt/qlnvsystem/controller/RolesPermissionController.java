@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tcdt.qlnvsystem.enums.EnumResponse;
 import com.tcdt.qlnvsystem.repository.RolesPermissionRepository;
 import com.tcdt.qlnvsystem.repository.RolesRepository;
 import com.tcdt.qlnvsystem.request.IdSearchReq;
@@ -40,7 +41,7 @@ public class RolesPermissionController extends BaseController {
 
 	@Autowired
 	private RolesPermissionRepository rolesPermissionRepository;
-	
+
 	@Autowired
 	private RolesPermissionService rolesPermissionService;
 
@@ -52,13 +53,12 @@ public class RolesPermissionController extends BaseController {
 		try {
 			Iterable<Role> data = this.rolesRepository.findAll();
 			resp.setData(data);
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
-			log.error(e.getMessage());
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		return ResponseEntity.ok(resp);
 	}
@@ -75,13 +75,12 @@ public class RolesPermissionController extends BaseController {
 			if (param == null)
 				throw new UnsupportedOperationException("Không tìm thấy vai trò");
 			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
-			resp.setData(param);
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
-			log.error(e.getMessage());
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		return ResponseEntity.ok(resp);
 	}
@@ -97,18 +96,19 @@ public class RolesPermissionController extends BaseController {
 			Optional<Role> role = rolesRepository.findById(Long.valueOf(rolePermissionRequest.getRoleId()));
 			if (!role.isPresent())
 				throw new Exception("Không tìm thấy vai trò cần sửa");
-			
+
 			rolesPermissionService.save(rolePermissionRequest);
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
 			// TODO: handle exception
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
 		}
 		return ResponseEntity.ok(resp);
 	}
-	
+
 	@PostMapping(value = "/findAllPermission", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Danh sách quyền hệ thống", response = List.class, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
@@ -117,13 +117,12 @@ public class RolesPermissionController extends BaseController {
 		try {
 			Iterable<RolesPermission> data = this.rolesPermissionRepository.findAllOrderById();
 			resp.setData(data);
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
-			log.error(e.getMessage());
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		return ResponseEntity.ok(resp);
 	}

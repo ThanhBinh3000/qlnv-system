@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.tcdt.qlnvsystem.entities.UserInfoEntity;
+import com.tcdt.qlnvsystem.enums.EnumResponse;
 import com.tcdt.qlnvsystem.repository.UserInfoEntityRepository;
 import com.tcdt.qlnvsystem.repository.UserInfoRepository;
 import com.tcdt.qlnvsystem.request.BaseRequest;
@@ -77,12 +78,14 @@ public class UserInfoController extends BaseController {
 			UserInfo user = userInfoRepository.findByUserIgnoreCase(str.getStr());
 			if (user == null)
 				throw new Exception("Tài khoản không tồn tại");
-			resp.setStatusCode(Contains.RESP_SUCC);
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 			resp.setData(user);
 		} catch (Exception e) {
 			// TODO: handle exception
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
 		}
 
 		return ResponseEntity.ok(resp);
@@ -98,11 +101,12 @@ public class UserInfoController extends BaseController {
 
 			BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 			userInfoRepository.updatePassword(bCryptPasswordEncoder.encode(password), token);
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
 		}
 		return new Gson().toJson(resp);
 	}
@@ -122,11 +126,12 @@ public class UserInfoController extends BaseController {
 
 			userInfoRepository.updatePasswordWhereUsername(bCryptPasswordEncoder.encode(decodeValue(newPassword)),
 					username);
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
 		}
 		return new Gson().toJson(resp);
 	}
@@ -161,13 +166,13 @@ public class UserInfoController extends BaseController {
 			if (dataInfo.getId() > 0)
 				data = 1;
 			resp.setData(data);
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
 			// TODO: handle exception
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
-			resp.setData(e.getLocalizedMessage());
+			log.error(e.getMessage());
 		}
 		return ResponseEntity.ok(resp);
 	}
@@ -193,13 +198,13 @@ public class UserInfoController extends BaseController {
 			if (dataInfo.getId() > 0)
 				data = 1;
 			resp.setData(data);
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
 			// TODO: handle exception
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
-			resp.setData(e.getLocalizedMessage());
+			log.error(e.getMessage());
 		}
 		return ResponseEntity.ok(resp);
 	}
@@ -219,13 +224,13 @@ public class UserInfoController extends BaseController {
 				throw new UnsupportedOperationException("delete-user-unknown");
 
 			userInfoRepository.delete(info);
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Xóa thành công");
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
 			// TODO: handle exception
-			resp.setStatusCode(Contains.RESP_FAIL);
-			resp.setData(e.getLocalizedMessage());
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
 		}
 		return ResponseEntity.ok(resp);
 	}
@@ -242,11 +247,12 @@ public class UserInfoController extends BaseController {
 			Page<UserInfoEntity> data = userInfoEntityRepository.selectParams(req.getUsername(), req.getFullName(),
 					req.getSysType(), req.getDvql(), req.getGroupsArr(), req.getStatus(), pageable);
 			resp.setData(data);
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
 		}
 		return ResponseEntity.ok(resp);
 	}
@@ -272,11 +278,11 @@ public class UserInfoController extends BaseController {
 			UserInfo updateCheck = userInfoRepository.save(dataDTB);
 
 			resp.setData(updateCheck);
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
 			// TODO: handle exception
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
 			log.error(e.getMessage());
 		}

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tcdt.qlnvsystem.enums.EnumResponse;
 import com.tcdt.qlnvsystem.repository.UserGroupPermissionRepository;
 import com.tcdt.qlnvsystem.repository.UserGroupRepository;
 import com.tcdt.qlnvsystem.repository.UserInfoRepository;
@@ -39,7 +40,9 @@ import com.tcdt.qlnvsystem.util.PaginationSet;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/group")
@@ -82,13 +85,13 @@ public class GroupUserController extends BaseController {
 				}
 				userGroupPermissionRepository.saveAll(permissionList);
 			}
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
 			// TODO: handle exception
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		return ResponseEntity.ok(resp);
 	}
@@ -108,7 +111,8 @@ public class GroupUserController extends BaseController {
 
 			user.get().setGroupPermissionsReq(userGroupPermissions);
 
-			resp.setStatusCode(Contains.RESP_SUCC);
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 			resp.setData(user);
 
 		} catch (Exception e) {
@@ -137,10 +141,13 @@ public class GroupUserController extends BaseController {
 				throw new Exception("Không tìm thấy nhóm cần xoá");
 			userGroupPermissionRepository.deleteByGroupId(groupId);
 			userGroupRepository.deleteById(groupId);
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
 			// TODO: handle exception
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
 		}
 
 		return ResponseEntity.ok(resp);
@@ -159,11 +166,13 @@ public class GroupUserController extends BaseController {
 			Page<UserGroup> user = userGroupRepository.selectParams(simpleSearchReq.getCode(),
 					simpleSearchReq.getName(), pageable);
 
-			resp.setStatusCode(Contains.RESP_SUCC);
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 			resp.setData(user);
 		} catch (Exception e) {
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
 		}
 
 		return ResponseEntity.ok(resp);
@@ -199,12 +208,14 @@ public class GroupUserController extends BaseController {
 			}
 			userGroupPermissionRepository.saveAll(permissionList);
 			// }
-			resp.setStatusCode(Contains.RESP_SUCC);
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 			resp.setMsg("Thành công");
 		} catch (Exception e) {
 			// TODO: handle exception
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
 		}
 		return ResponseEntity.ok(resp);
 	}
@@ -223,12 +234,13 @@ public class GroupUserController extends BaseController {
 			userGroup.get().setStatus(userGroup.get().getStatus().equals(Contains.HOAT_DONG) ? Contains.NGUNG_HOAT_DONG
 					: Contains.HOAT_DONG);
 			userGroupRepository.save(userGroup.get());
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
 			// TODO: handle exception
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
 		}
 		return ResponseEntity.ok(resp);
 	}
@@ -241,8 +253,8 @@ public class GroupUserController extends BaseController {
 		try {
 			Iterable<UserGroup> userGroups = userGroupRepository.findByStatus(Contains.HOAT_DONG);
 			resp.setData(userGroups);
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
 			resp.setStatusCode(Contains.RESP_FAIL);
 			resp.setMsg(e.getMessage());
