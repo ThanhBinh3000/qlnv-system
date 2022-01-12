@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvsystem.jwt.TokenAuthenticationService;
+import com.tcdt.qlnvsystem.util.Contains;
 
 public class BaseController {
 
@@ -84,7 +85,7 @@ public class BaseController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	<T> void updateMapToObject(Map<String, String> params, T source, Class cls) throws JsonMappingException {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
+		mapper.setDateFormat(new SimpleDateFormat(Contains.FORMAT_DATE_STR));
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		Object overrideObj = mapper.convertValue(params, cls);
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -93,7 +94,7 @@ public class BaseController {
 
 	public <T> void updateObjectToObject(T source, T objectEdit) throws JsonMappingException {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
+		mapper.setDateFormat(new SimpleDateFormat(Contains.FORMAT_DATE_STR));
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 		mapper.updateValue(source, objectEdit);

@@ -213,6 +213,7 @@ public class UserInfoController extends BaseController {
 	@PostMapping("/delete")
 	@ResponseStatus(HttpStatus.OK)
 	@PreAuthorize("hasRole('SYS_USER_DEL')")
+	//TODO: ten chuc nang + hanh dong
 	public ResponseEntity<Resp> delete(@RequestBody BaseRequest str) throws Exception {
 		Resp resp = new Resp();
 		try {
