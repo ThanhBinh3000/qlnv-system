@@ -3,6 +3,8 @@ package com.tcdt.qlnvsystem.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tcdt.qlnvsystem.entities.RolesPermissionEntity;
 import com.tcdt.qlnvsystem.enums.EnumResponse;
+import com.tcdt.qlnvsystem.repository.RolesPermissionEntityRepository;
 import com.tcdt.qlnvsystem.repository.RolesPermissionRepository;
 import com.tcdt.qlnvsystem.repository.RolesRepository;
 import com.tcdt.qlnvsystem.request.IdSearchReq;
@@ -41,6 +45,9 @@ public class RolesPermissionController extends BaseController {
 
 	@Autowired
 	private RolesPermissionRepository rolesPermissionRepository;
+	
+	@Autowired
+	private RolesPermissionEntityRepository rolesPermissionEntityRepository;
 
 	@Autowired
 	private RolesPermissionService rolesPermissionService;
@@ -116,6 +123,24 @@ public class RolesPermissionController extends BaseController {
 		Resp resp = new Resp();
 		try {
 			Iterable<RolesPermission> data = this.rolesPermissionRepository.findAllOrderById();
+			resp.setData(data);
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
+		} catch (Exception e) {
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
+			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
+		}
+		return ResponseEntity.ok(resp);
+	}
+	
+	@PostMapping(value = "/findByUser", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Danh sách quyền hệ thống theo user", response = List.class, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<Resp> findByUser(HttpServletRequest request) {
+		Resp resp = new Resp();
+		try {
+			Iterable<RolesPermissionEntity> data = this.rolesPermissionEntityRepository.findByUser(getUserName(request));
 			resp.setData(data);
 			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
 			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());

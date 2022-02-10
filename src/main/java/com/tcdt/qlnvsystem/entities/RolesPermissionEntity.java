@@ -1,4 +1,4 @@
-package com.tcdt.qlnvsystem.table;
+package com.tcdt.qlnvsystem.entities;
 
 import java.util.List;
 
@@ -19,11 +19,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 @Entity
-@Table(name = "SYS_PERMISSION")
 @Data
-public class RolesPermission {
+public class RolesPermissionEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Column(length = 250)
 	private String name;
@@ -37,12 +35,5 @@ public class RolesPermission {
 	private String trangThai;
 	@Column(length = 2)
 	private String menu;
-	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-	@JoinColumn(name = "parent_id", referencedColumnName = "id")
-	private RolesPermission parent;
-
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "parent_id", referencedColumnName = "id")
-	private List<RolesPermission> child;
+	private Long parent_id;
 }
