@@ -1,48 +1,25 @@
 package com.tcdt.qlnvsystem.table;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
 @Entity
-@Table(name = "SYS_PERMISSION")
+@Table(name = "ROLES_PERMISSION")
 @Data
 public class RolesPermission {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ROLES_PERMISSION_SEQ")
+	@SequenceGenerator(sequenceName = "ROLES_PERMISSION_SEQ", allocationSize = 1, name = "ROLES_PERMISSION_SEQ")
 	private Long id;
-	@Column(length = 250)
-	private String name;
-	@Column(length = 50)
-	private String code;
-	@Column(length = 255)
-	private String url;
-	@Column
-	private Integer thuTu;
-	@Column(length = 2)
-	private String trangThai;
-	@Column(length = 2)
-	private String menu;
-	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-	@JoinColumn(name = "parent_id", referencedColumnName = "id")
-	private RolesPermission parent;
-
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "parent_id", referencedColumnName = "id")
-	private List<RolesPermission> child;
+	@Column(name = "role_id")
+	private Long roleId;
+	@Column(name = "PERMISSION_ID")
+	private Long permissionId;
 }

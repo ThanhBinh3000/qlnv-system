@@ -32,8 +32,6 @@ import com.tcdt.qlnvsystem.request.SimpleSearchReq;
 import com.tcdt.qlnvsystem.request.UserGroupPermissionReq;
 import com.tcdt.qlnvsystem.request.UserGroupReq;
 import com.tcdt.qlnvsystem.response.Resp;
-import com.tcdt.qlnvsystem.table.UserGroup;
-import com.tcdt.qlnvsystem.table.UserGroupPermission;
 import com.tcdt.qlnvsystem.util.Contains;
 import com.tcdt.qlnvsystem.util.PaginationSet;
 

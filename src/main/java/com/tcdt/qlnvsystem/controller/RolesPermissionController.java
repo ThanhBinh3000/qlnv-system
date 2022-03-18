@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tcdt.qlnvsystem.entities.RolesPermissionEntity;
 import com.tcdt.qlnvsystem.enums.EnumResponse;
 import com.tcdt.qlnvsystem.repository.RolesPermissionEntityRepository;
-import com.tcdt.qlnvsystem.repository.RolesPermissionRepository;
+import com.tcdt.qlnvsystem.repository.SysPermissionRepository;
 import com.tcdt.qlnvsystem.repository.RolesRepository;
 import com.tcdt.qlnvsystem.request.IdSearchReq;
 import com.tcdt.qlnvsystem.request.RolePermissionRequest;
 import com.tcdt.qlnvsystem.response.Resp;
 import com.tcdt.qlnvsystem.service.RolesPermissionService;
 import com.tcdt.qlnvsystem.table.Role;
-import com.tcdt.qlnvsystem.table.RolesPermission;
+import com.tcdt.qlnvsystem.table.SysPermission;
 import com.tcdt.qlnvsystem.util.Contains;
 
 import io.swagger.annotations.Api;
@@ -44,7 +44,7 @@ public class RolesPermissionController extends BaseController {
 	private RolesRepository rolesRepository;
 
 	@Autowired
-	private RolesPermissionRepository rolesPermissionRepository;
+	private SysPermissionRepository rolesPermissionRepository;
 	
 	@Autowired
 	private RolesPermissionEntityRepository rolesPermissionEntityRepository;
@@ -122,7 +122,7 @@ public class RolesPermissionController extends BaseController {
 	public ResponseEntity<Resp> findAllPermission() {
 		Resp resp = new Resp();
 		try {
-			Iterable<RolesPermission> data = this.rolesPermissionRepository.findAllOrderById();
+			Iterable<SysPermission> data = this.rolesPermissionRepository.findAllOrderById();
 			resp.setData(data);
 			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
 			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());

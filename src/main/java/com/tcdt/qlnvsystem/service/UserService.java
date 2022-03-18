@@ -10,7 +10,6 @@ import com.tcdt.qlnvsystem.jwt.CustomUserDetails;
 import com.tcdt.qlnvsystem.repository.UserActionRepository;
 import com.tcdt.qlnvsystem.repository.UserHistoryRepository;
 import com.tcdt.qlnvsystem.repository.UserInfoRepository;
-import com.tcdt.qlnvsystem.table.UserAction;
 import com.tcdt.qlnvsystem.table.UserHistory;
 import com.tcdt.qlnvsystem.table.UserInfo;
 

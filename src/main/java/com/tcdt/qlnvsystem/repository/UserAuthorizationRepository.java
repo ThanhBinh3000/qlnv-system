@@ -3,7 +3,6 @@ package com.tcdt.qlnvsystem.repository;
 import javax.transaction.Transactional;
 
 import org.springframework.data.repository.CrudRepository;
-import com.tcdt.qlnvsystem.table.UserAuthorization;
 
 public interface UserAuthorizationRepository extends CrudRepository<UserAuthorization, Long> {
 

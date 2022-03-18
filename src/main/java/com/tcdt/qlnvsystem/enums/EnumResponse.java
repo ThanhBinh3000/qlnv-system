@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum EnumResponse {
-	RESP_SUCC(0, "Thành công"),
-	RESP_FAIL(1, "Lỗi");
+    RESP_SUCC(0, "Thành công"), RESP_FAIL(1, "Lỗi hệ thống");
 
-    private final byte value;
+    private final int value;
 
     private final String description;
 
@@ -17,7 +16,7 @@ public enum EnumResponse {
     }
 
     @JsonValue
-    public byte getValue() {
+    public int getValue() {
         return value;
     }
 
@@ -26,7 +25,7 @@ public enum EnumResponse {
     }
 
     @JsonCreator
-    public static EnumResponse fromValue(byte value) {
+    public static EnumResponse fromValue(int value) {
         for (EnumResponse v : EnumResponse.values()) {
             if (v.getValue() == value) {
                 return v;

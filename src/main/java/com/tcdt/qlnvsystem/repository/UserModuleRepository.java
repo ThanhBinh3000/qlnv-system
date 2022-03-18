@@ -6,9 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tcdt.qlnvsystem.table.UserModule;
-
-
 
 @Repository
 public interface UserModuleRepository extends CrudRepository<UserModule, Long> {

@@ -24,7 +24,6 @@ import org.springframework.web.util.WebUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tcdt.qlnvsystem.RequestService;
 import com.tcdt.qlnvsystem.service.UserService;
-import com.tcdt.qlnvsystem.table.UserAction;
 import com.tcdt.qlnvsystem.table.UserHistory;
 import com.tcdt.qlnvsystem.util.MapAction;
 

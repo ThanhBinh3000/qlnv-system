@@ -6,9 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import com.tcdt.qlnvsystem.table.UserGroup;
-
-
 
 public interface UserGroupRepository extends CrudRepository<UserGroup, Long> {
 

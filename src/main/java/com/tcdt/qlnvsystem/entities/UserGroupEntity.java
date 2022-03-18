@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
-import com.tcdt.qlnvsystem.table.UserGroupPermission;
-
 import lombok.Data;
 
 @Entity

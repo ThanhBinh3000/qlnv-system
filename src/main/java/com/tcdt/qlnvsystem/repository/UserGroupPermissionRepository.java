@@ -6,8 +6,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.tcdt.qlnvsystem.table.UserGroupPermission;
-
 public interface UserGroupPermissionRepository extends CrudRepository<UserGroupPermission, Long> {
 
 	@Transactional
