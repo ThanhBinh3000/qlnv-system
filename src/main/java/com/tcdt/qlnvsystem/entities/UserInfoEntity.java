@@ -15,22 +15,10 @@ public class UserInfoEntity {
 	String username;
 	String fullName;
 	String status;
-	String dvql;
-	String token;
 	String sysType;
-	Long groupId;
-	Timestamp createTime;
+	String createTime;
 	String createBy;
 	String email;
-	String idcard;
-	Long chucvuId;
 	String phoneNo;
-	String title;
-	String description;
-	String region;
-	String department;
-	long notifyViewId;
-	String groupsArr;
-	String groupName;
 	String dvqlName;
 }

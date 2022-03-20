@@ -14,9 +14,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "SYS_PERMISSION")
@@ -42,9 +46,12 @@ public class SysPermission {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
 	@JoinColumn(name = "parent_id", referencedColumnName = "id")
+	//@JsonIgnoreProperties(value = {"child"})
 	private SysPermission parent;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "parent_id", referencedColumnName = "id")
+	//@Fetch(value = FetchMode.SUBSELECT)
+	//@JsonIgnoreProperties(value = {"parent"})
 	private List<SysPermission> child;
 }

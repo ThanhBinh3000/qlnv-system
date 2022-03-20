@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.tcdt.qlnvsystem.request.RolesPermissionReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,10 +23,8 @@ import com.tcdt.qlnvsystem.repository.RolesPermissionEntityRepository;
 import com.tcdt.qlnvsystem.repository.SysPermissionRepository;
 import com.tcdt.qlnvsystem.repository.RolesRepository;
 import com.tcdt.qlnvsystem.request.IdSearchReq;
-import com.tcdt.qlnvsystem.request.RolePermissionRequest;
 import com.tcdt.qlnvsystem.response.Resp;
-import com.tcdt.qlnvsystem.service.RolesPermissionService;
-import com.tcdt.qlnvsystem.table.Role;
+import com.tcdt.qlnvsystem.table.Roles;
 import com.tcdt.qlnvsystem.table.SysPermission;
 import com.tcdt.qlnvsystem.util.Contains;
 
@@ -49,8 +48,6 @@ public class RolesPermissionController extends BaseController {
 	@Autowired
 	private RolesPermissionEntityRepository rolesPermissionEntityRepository;
 
-	@Autowired
-	private RolesPermissionService rolesPermissionService;
 
 	@ApiOperation(value = "Danh sách vai trò hệ thống", response = List.class, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PostMapping(value = "/findAll", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -58,7 +55,7 @@ public class RolesPermissionController extends BaseController {
 	public ResponseEntity<Resp> findAllRole() {
 		Resp resp = new Resp();
 		try {
-			Iterable<Role> data = this.rolesRepository.findAll();
+			Iterable<Roles> data = this.rolesRepository.findAll();
 			resp.setData(data);
 			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
 			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
@@ -69,70 +66,7 @@ public class RolesPermissionController extends BaseController {
 		}
 		return ResponseEntity.ok(resp);
 	}
-
-	@PostMapping(value = "/findByCode", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Chi tiết vai trò và quyền", response = List.class, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Resp> findRoleByCode(@RequestBody IdSearchReq req) {
-		Resp resp = new Resp();
-		try {
-			if (req.getId() == null)
-				throw new UnsupportedOperationException("Không tìm thấy vai trò");
-			Optional<Role> param = rolesRepository.findById(req.getId());
-			if (param == null)
-				throw new UnsupportedOperationException("Không tìm thấy vai trò");
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
-			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
-		} catch (Exception e) {
-			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
-			resp.setMsg(e.getMessage());
-			log.error(e.getMessage());
-		}
-		return ResponseEntity.ok(resp);
-	}
-
-	@ApiOperation(value = "Cập nhật quyền cho vai trò", response = List.class)
-	@PostMapping(value = "/updateRole", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Resp> update(@RequestBody RolePermissionRequest rolePermissionRequest) {
-		Resp resp = new Resp();
-		try {
-			if (StringUtils.isEmpty(rolePermissionRequest.getRoleId()))
-				throw new Exception("Sửa thất bại, không tìm thấy mã vai trò");
-
-			Optional<Role> role = rolesRepository.findById(Long.valueOf(rolePermissionRequest.getRoleId()));
-			if (!role.isPresent())
-				throw new Exception("Không tìm thấy vai trò cần sửa");
-
-			rolesPermissionService.save(rolePermissionRequest);
-			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
-			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
-		} catch (Exception e) {
-			// TODO: handle exception
-			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
-			resp.setMsg(e.getMessage());
-			log.error(e.getMessage());
-		}
-		return ResponseEntity.ok(resp);
-	}
-
-	@PostMapping(value = "/findAllPermission", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Danh sách quyền hệ thống", response = List.class, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Resp> findAllPermission() {
-		Resp resp = new Resp();
-		try {
-			Iterable<SysPermission> data = this.rolesPermissionRepository.findAllOrderById();
-			resp.setData(data);
-			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
-			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
-		} catch (Exception e) {
-			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
-			resp.setMsg(e.getMessage());
-			log.error(e.getMessage());
-		}
-		return ResponseEntity.ok(resp);
-	}
+	
 	
 	@PostMapping(value = "/findByUser", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Danh sách quyền hệ thống theo user", response = List.class, produces = MediaType.APPLICATION_JSON_VALUE)

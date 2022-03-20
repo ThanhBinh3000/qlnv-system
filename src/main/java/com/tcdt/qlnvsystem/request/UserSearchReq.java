@@ -9,9 +9,6 @@ public class UserSearchReq {
 	String fullName;
 	String status;
 	String dvql;
-	String groupId;
-	String groupsArr;
-	Integer limit;
-	Integer page;
+	PaggingReq paggingReq;
 	
 }

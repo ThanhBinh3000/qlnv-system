@@ -8,6 +8,12 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.tcdt.qlnvsystem.repository.RolesPermissonRepository;
+import com.tcdt.qlnvsystem.repository.RolesRepository;
+import com.tcdt.qlnvsystem.table.Roles;
+import com.tcdt.qlnvsystem.table.RolesPermission;
+import com.tcdt.qlnvsystem.table.SysPermission;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,13 +30,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tcdt.qlnvsystem.enums.EnumResponse;
-import com.tcdt.qlnvsystem.repository.UserGroupPermissionRepository;
-import com.tcdt.qlnvsystem.repository.UserGroupRepository;
 import com.tcdt.qlnvsystem.repository.UserInfoRepository;
 import com.tcdt.qlnvsystem.request.IdSearchReq;
 import com.tcdt.qlnvsystem.request.SimpleSearchReq;
-import com.tcdt.qlnvsystem.request.UserGroupPermissionReq;
-import com.tcdt.qlnvsystem.request.UserGroupReq;
+import com.tcdt.qlnvsystem.request.RolesPermissionReq;
+import com.tcdt.qlnvsystem.request.RolesReq;
 import com.tcdt.qlnvsystem.response.Resp;
 import com.tcdt.qlnvsystem.util.Contains;
 import com.tcdt.qlnvsystem.util.PaginationSet;
@@ -43,13 +47,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/group")
+@RequestMapping("/nhom-nguoi-dung")
 @Api(tags = "Nhóm người sử dụng")
-public class GroupUserController extends BaseController {
+public class RolesController extends BaseController {
 	@Autowired
-	private UserGroupRepository userGroupRepository;
+	private RolesRepository rolesRepository;
 	@Autowired
-	private UserGroupPermissionRepository userGroupPermissionRepository;
+	private RolesPermissonRepository rolesPermissionRepository;
 
 	@Autowired
 	private UserInfoRepository userInfoRepository;
@@ -57,32 +61,13 @@ public class GroupUserController extends BaseController {
 	@ApiOperation(value = "Tạo mới nhóm người sử dụng", response = List.class)
 	@PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<Resp> insert(@Valid HttpServletRequest request, @RequestBody UserGroupReq userGroupReq) {
-		UserGroup group = new UserGroup();
+	public ResponseEntity<Resp> insert(@Valid HttpServletRequest request, @RequestBody RolesReq req) {
 		Resp resp = new Resp();
-		Calendar cal = Calendar.getInstance();
 		try {
-			group.setGroupCode(userGroupReq.getGroupCode());
-			group.setGroupName(userGroupReq.getGroupName());
-			group.setDescription(userGroupReq.getDescription());
-			group.setCreateTime(cal.getTime());
-			group.setData(userGroupReq.getData());
-			group.setStatus(Contains.HOAT_DONG);
-			group.setDataFt(userGroupReq.getDataFt());
-			group.setCreateBy(getUserName(request));
+			Roles dataMap = new ModelMapper().map(req, Roles.class);
 
-			UserGroup groupSubmit = userGroupRepository.save(group);
-			if (!StringUtils.isEmpty(groupSubmit)) {
-				ArrayList<UserGroupPermission> permissionList = new ArrayList<UserGroupPermission>();
-				List<UserGroupPermissionReq> permissionReqList = userGroupReq.getGroupPermissionsReq();
-				for (UserGroupPermissionReq permissionReq : permissionReqList) {
-					UserGroupPermission permission = new UserGroupPermission();
-					permission.setGroupId(groupSubmit.getId());
-					permission.setModuleId(permissionReq.getModuleId());
-					permissionList.add(permission);
-				}
-				userGroupPermissionRepository.saveAll(permissionList);
-			}
+			Roles dataInfo = this.rolesRepository.save(dataMap);
+			resp.setData(dataInfo);
 			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
 			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
@@ -100,18 +85,17 @@ public class GroupUserController extends BaseController {
 	public ResponseEntity<Resp> select(@RequestBody IdSearchReq idSearchReq) {
 		Resp resp = new Resp();
 		try {
-			Optional<UserGroup> user = userGroupRepository.findById(idSearchReq.getId());
-			if (!user.isPresent())
+			Optional<Roles> role = rolesRepository.findById(idSearchReq.getId());
+			if (!role.isPresent())
 				throw new Exception("Không tồn tại bản ghi");
+			List<RolesPermission> RolesPermissions = rolesPermissionRepository
+					.findByRoleId(role.get().getId());
 
-			List<UserGroupPermission> userGroupPermissions = userGroupPermissionRepository
-					.findByGroupId(user.get().getId());
-
-			user.get().setGroupPermissionsReq(userGroupPermissions);
+			role.get().setRolesPermission(RolesPermissions);
 
 			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
 			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
-			resp.setData(user);
+			resp.setData(role);
 
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -130,15 +114,15 @@ public class GroupUserController extends BaseController {
 		try {
 			if (StringUtils.isEmpty(idSearchReq.getId()))
 				throw new Exception("Xoá thất bại, không tìm thấy mã nhóm");
-			Long groupId = idSearchReq.getId();
-			long countUser = userInfoRepository.countNhom(groupId + "");
+			Long roleId = idSearchReq.getId();
+			long countUser = userInfoRepository.countByRoleId(roleId);
 			if (countUser > 0)
 				throw new Exception("Xoá thất bại, nhóm quyền đang được sử dụng");
-			Optional<UserGroup> userGroup = userGroupRepository.findById(groupId);
-			if (!userGroup.isPresent())
+			Optional<Roles> Roles = rolesRepository.findById(roleId);
+			if (!Roles.isPresent())
 				throw new Exception("Không tìm thấy nhóm cần xoá");
-			userGroupPermissionRepository.deleteByGroupId(groupId);
-			userGroupRepository.deleteById(groupId);
+			rolesPermissionRepository.deleteByRoleId(roleId);
+			rolesRepository.deleteById(roleId);
 			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
 			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
@@ -161,7 +145,7 @@ public class GroupUserController extends BaseController {
 			int limit = PaginationSet.getLimit(simpleSearchReq.getLimit());
 			Pageable pageable = PageRequest.of(page, limit);
 
-			Page<UserGroup> user = userGroupRepository.selectParams(simpleSearchReq.getCode(),
+			Page<Roles> user = rolesRepository.selectParams(simpleSearchReq.getCode(),
 					simpleSearchReq.getName(), pageable);
 
 			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
@@ -178,33 +162,32 @@ public class GroupUserController extends BaseController {
 
 	@ApiOperation(value = "Cập nhật nhóm người sử dụng", response = List.class)
 	@PostMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Resp> update(@RequestBody UserGroupReq userGroupReq) {
+	public ResponseEntity<Resp> update(@RequestBody RolesReq RolesReq) {
 		Resp resp = new Resp();
 		try {
-			if (StringUtils.isEmpty(userGroupReq.getId()))
+			if (StringUtils.isEmpty(RolesReq.getId()))
 				throw new Exception("Sửa thất bại, không tìm thấy mã nhóm");
 
-			Optional<UserGroup> userGroup = userGroupRepository.findById(Long.valueOf(userGroupReq.getId()));
-			if (!userGroup.isPresent())
+			Optional<Roles> Roles = rolesRepository.findById(Long.valueOf(RolesReq.getId()));
+			if (!Roles.isPresent())
 				throw new Exception("Không tìm thấy nhóm cần sửa");
-			userGroup.get().setGroupCode(userGroupReq.getGroupCode());
-			userGroup.get().setGroupName(userGroupReq.getGroupName());
-			userGroup.get().setDescription(userGroupReq.getDescription());
+			Roles.get().setCode(RolesReq.getCode());
+			Roles.get().setName(RolesReq.getName());
 
-			userGroupRepository.save(userGroup.get());
+			rolesRepository.save(Roles.get());
 
-			// if (userGroupReq.getGroupPermissionsReq() != null &&
-			// !userGroupReq.getGroupPermissionsReq().isEmpty()) {
-			userGroupPermissionRepository.deleteByGroupId(userGroupReq.getId());
-			ArrayList<UserGroupPermission> permissionList = new ArrayList<UserGroupPermission>();
-			List<UserGroupPermissionReq> permissionReqList = userGroupReq.getGroupPermissionsReq();
-			for (UserGroupPermissionReq permissionReq : permissionReqList) {
-				UserGroupPermission permission = new UserGroupPermission();
-				permission.setGroupId(userGroupReq.getId());
-				permission.setModuleId(permissionReq.getModuleId());
+			// if (RolesReq.getGroupPermissionsReq() != null &&
+			// !RolesReq.getGroupPermissionsReq().isEmpty()) {
+			rolesPermissionRepository.deleteByRoleId(RolesReq.getId());
+			ArrayList<RolesPermission> permissionList = new ArrayList<>();
+			List<RolesPermissionReq> permissionReqList = RolesReq.getRolePermissionsReq();
+			for (RolesPermissionReq permissionReq : permissionReqList) {
+				RolesPermission permission = new RolesPermission();
+				permission.setRoleId(RolesReq.getId());
+				permission.setPermissionId(permissionReq.getPermissionId());
 				permissionList.add(permission);
 			}
-			userGroupPermissionRepository.saveAll(permissionList);
+			rolesPermissionRepository.saveAll(permissionList);
 			// }
 			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
 			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
@@ -226,12 +209,12 @@ public class GroupUserController extends BaseController {
 			if (StringUtils.isEmpty(id.getId()))
 				throw new Exception("Không tìm thấy mã nhóm");
 
-			Optional<UserGroup> userGroup = userGroupRepository.findById(Long.valueOf(id.getId()));
-			if (!userGroup.isPresent())
+			Optional<Roles> roles = rolesRepository.findById(Long.valueOf(id.getId()));
+			if (!roles.isPresent())
 				throw new Exception("Không tìm thấy nhóm cần sửa");
-			userGroup.get().setStatus(userGroup.get().getStatus().equals(Contains.HOAT_DONG) ? Contains.NGUNG_HOAT_DONG
+			roles.get().setStatus(roles.get().getStatus().equals(Contains.HOAT_DONG) ? Contains.NGUNG_HOAT_DONG
 					: Contains.HOAT_DONG);
-			userGroupRepository.save(userGroup.get());
+			rolesRepository.save(roles.get());
 			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
 			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
@@ -249,8 +232,8 @@ public class GroupUserController extends BaseController {
 	public ResponseEntity<Resp> collect() {
 		Resp resp = new Resp();
 		try {
-			Iterable<UserGroup> userGroups = userGroupRepository.findByStatus(Contains.HOAT_DONG);
-			resp.setData(userGroups);
+			Iterable<Roles> roles = rolesRepository.findByStatus(Contains.HOAT_DONG);
+			resp.setData(roles);
 			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
 			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {

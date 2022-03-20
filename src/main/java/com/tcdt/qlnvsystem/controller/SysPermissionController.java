@@ -19,10 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.google.gson.Gson;
-import com.tcdt.qlnvsystem.repository.UserModuleRepository;
 import com.tcdt.qlnvsystem.request.IdSearchReq;
-import com.tcdt.qlnvsystem.request.UserModuleReq;
-import com.tcdt.qlnvsystem.request.UserModuleSearchReq;
 import com.tcdt.qlnvsystem.response.Resp;
 import com.tcdt.qlnvsystem.util.Contains;
 
@@ -33,7 +30,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/quyen")
 @Api(tags = "Chức năng người sử dụng")
-public class SysPermissionController {
+public class SysPermissionController extends BaseController{
 
 	@Autowired
 	private SysPermissionRepository sysPermissionRepository;
@@ -127,16 +124,11 @@ public class SysPermissionController {
 			Optional<SysPermission> info = this.sysPermissionRepository.findById(req.getId());
 			if (info.isPresent())
 				throw new UnsupportedOperationException("Không tìm thấy chức năng");
+			SysPermission dataMap = new ModelMapper().map(req, SysPermission.class);
+			updateObjectToObject(info.get(), dataMap);
 
-			info.get().setName(req.getName());
-			info.get().setUrl(req.getUrl());
-			info.get().setStatus(req.getStatus());
-			info.get().setPlace(req.getPlace());
-			info.get().setData(req.getData());
-			info.get().setIcon(req.getIcon());
-			info.get().setIsShow(req.getIsShow());
 			if(req.getParentId() != null) {
-				Optional<UserModule> parent = this.userModuleRepository.findById(req.getParentId());
+				Optional<SysPermission> parent = this.sysPermissionRepository.findById(req.getParentId());
 				if(parent.isPresent()) {
 					info.get().setParent(parent.get());
 				}
@@ -144,35 +136,14 @@ public class SysPermissionController {
 				info.get().setParent(null);
 			}
 
-			int data = 0;
-			UserModule dataInfo = this.userModuleRepository.save(info.get());
-			if (dataInfo.getId() > 0)
-				data = 1;
-			resp.setData(data);
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
+			SysPermission dataInfo = this.sysPermissionRepository.save(dataMap);
+			resp.setData(dataInfo);
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
-			// TODO: handle exception
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
-			resp.setData(e.getLocalizedMessage());
-			e.printStackTrace();
-		}
-		return ResponseEntity.ok(resp);
-	}
-	@PostMapping(value = "/findAll", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Resp> collect() {
-		Resp resp = new Resp();
-		try {
-			Iterable<UserModule> data = this.userModuleRepository.findAllOrderBy();
-			resp.setData(data);
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
-		} catch (Exception e) {
-			resp.setStatusCode(Contains.RESP_FAIL);
-			resp.setMsg(e.getMessage());
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		return ResponseEntity.ok(resp);
 	}
@@ -184,19 +155,19 @@ public class SysPermissionController {
 			if (StringUtils.isEmpty(id.getId()))
 				throw new Exception("Không tìm thấy chức năng");
 
-			Optional<UserModule> userModule = userModuleRepository.findById(Long.valueOf(id.getId()));
+			Optional<SysPermission> userModule = sysPermissionRepository.findById(Long.valueOf(id.getId()));
 			if (!userModule.isPresent())
 				throw new Exception("Không tìm thấy chức năng");
-			String status = userModule.get().getStatus();
-			userModule.get().setStatus(status.equals(Contains.HOAT_DONG) ? Contains.NGUNG_HOAT_DONG : Contains.HOAT_DONG);
-			userModuleRepository.save(userModule.get());
-			userModuleRepository.updateStatusChild(status.equals(Contains.HOAT_DONG) ? Contains.NGUNG_HOAT_DONG : Contains.HOAT_DONG,userModule.get().getId());
-			resp.setStatusCode(Contains.RESP_SUCC);
-			resp.setMsg("Thành công");
+			String status = userModule.get().getTrangThai();
+			userModule.get().setTrangThai(status.equals(Contains.HOAT_DONG) ? Contains.NGUNG_HOAT_DONG : Contains.HOAT_DONG);
+			sysPermissionRepository.save(userModule.get());
+			//sysPermissionRepository.updateStatusChild(status.equals(Contains.HOAT_DONG) ? Contains.NGUNG_HOAT_DONG : Contains.HOAT_DONG,userModule.get().getId());
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {
-			// TODO: handle exception
-			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
 		}
 		return ResponseEntity.ok(resp);
 	}

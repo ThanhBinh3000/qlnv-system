@@ -11,20 +11,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserGroupReq extends BaseRequest {
+public class RolesReq extends BaseRequest {
 	@ApiModelProperty(notes = "Bắt buộc set đối với update, delete")
 	long id;
 	@NotNull(message = "Không được để trống")
 	@Size(max = 200, message = "Mã nhóm không được vượt quá 200 ký tự")
-	String groupCode;
+	String code;
 	@NotNull(message = "Không được để trống")
 	@Size(max = 200, message = "Tên nhóm không được vượt quá 200 ký tự")
-	String groupName;
-	@Size(max = 500, message = "Mô tả nhóm không được vượt quá 200 ký tự")
-	String description;
+	String name;
 	String status;
-	String data;
-	String dataFt;
-	List<UserGroupPermissionReq> groupPermissionsReq;
+	List<RolesPermissionReq> rolePermissionsReq;
 
 }

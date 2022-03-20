@@ -6,8 +6,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserGroupPermissionReq extends BaseRequest{
+public class RolesPermissionReq extends BaseRequest{
 	long id;
-	long groupId;
-	long moduleId;
+	long roleId;
+	long permissionId;
 }
