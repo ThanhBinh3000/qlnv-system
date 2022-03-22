@@ -23,7 +23,7 @@ public class UserInfoReq extends BaseRequest{
 	@Size(min = 8, max = 50, message = "fullName phải lớn hơn 8 ký tự và ít hơn 50 ký tự")
 	String fullName;
 	String status;
-	Long dvql;
+	String dvql;
 	String token;
 	@NotNull(message = "Không được để trống")
 	@Size(max = 2, message = "sysType phải ít hơn 2 ký tự")
