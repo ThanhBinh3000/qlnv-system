@@ -1,6 +1,7 @@
 package com.tcdt.qlnvsystem.controller;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -16,6 +17,16 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.tcdt.qlnvsystem.enums.EnumResponse;
+import com.tcdt.qlnvsystem.request.BaseRequest;
+import com.tcdt.qlnvsystem.service.feign.CategoryServiceProxy;
+import com.tcdt.qlnvsystem.table.catalog.QlnvDmDonvi;
+import com.tcdt.qlnvsystem.util.Request;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 
@@ -27,6 +38,8 @@ import com.tcdt.qlnvsystem.jwt.TokenAuthenticationService;
 import com.tcdt.qlnvsystem.util.Contains;
 
 public class BaseController {
+	@Autowired
+	private CategoryServiceProxy categoryServiceProxy;
 
 	public String getStringParams(Map<String, String> allParams, String nameParam) {
 		if (StringUtils.isEmpty(allParams.get(nameParam))) {
@@ -81,7 +94,49 @@ public class BaseController {
 
 		return null;
 	}
+	public QlnvDmDonvi getDvi(HttpServletRequest request) throws Exception {
+		// Call feign get dvql
+		BaseRequest baseRequest = new BaseRequest();
+		baseRequest.setStr(getDvql(request));
+		ResponseEntity<String> response = categoryServiceProxy.getDetailByCode(this.getAuthorizationToken(request),
+				baseRequest);
 
+		if (Request.getStatus(response.getBody()) != EnumResponse.RESP_SUCC.getValue())
+			throw new Exception("Không tìm truy vấn được thông tin đơn vị");
+
+		// Passed ket qua tra ve, tuy bien type list or object
+		String str = Request.getAttrFromJson(response.getBody(), "data");
+		Type type = new TypeToken<QlnvDmDonvi>() {
+		}.getType();
+		QlnvDmDonvi objDonVi = new Gson().fromJson(str, type);
+
+		if (ObjectUtils.isEmpty(objDonVi))
+			throw new Exception("Không tìm truy vấn được thông tin đơn vị");
+		return objDonVi;
+	}
+	public String getAuthorizationToken(HttpServletRequest request) {
+		return (String) request.getHeader("Authorization");
+	}
+	public QlnvDmDonvi getDviByMa(HttpServletRequest request, String maDvi) throws Exception {
+		// Call feign get dvql
+		BaseRequest baseRequest = new BaseRequest();
+		baseRequest.setStr(maDvi);
+		ResponseEntity<String> response = categoryServiceProxy.getDetailByCode(this.getAuthorizationToken(request),
+				baseRequest);
+
+		if (Request.getStatus(response.getBody()) != EnumResponse.RESP_SUCC.getValue())
+			throw new Exception("Không tìm truy vấn được thông tin đơn vị");
+
+		// Passed ket qua tra ve, tuy bien type list or object
+		String str = Request.getAttrFromJson(response.getBody(), "data");
+		Type type = new TypeToken<QlnvDmDonvi>() {
+		}.getType();
+		QlnvDmDonvi objDonVi = new Gson().fromJson(str, type);
+
+		if (ObjectUtils.isEmpty(objDonVi))
+			throw new Exception("Không tìm truy vấn được thông tin đơn vị");
+		return objDonVi;
+	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	<T> void updateMapToObject(Map<String, String> params, T source, Class cls) throws JsonMappingException {
 		ObjectMapper mapper = new ObjectMapper();

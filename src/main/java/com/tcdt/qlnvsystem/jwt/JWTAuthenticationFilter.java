@@ -127,7 +127,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 		}
 	}
 
-	public Map<String, String> getMapAction() {
+	public Map<String, String> getMapAction() throws Exception {
 		if (MapAction.map == null && userService != null) {
 			MapAction.map = new HashMap<>();
 			Iterable<UserAction> list = userService.findAll();
