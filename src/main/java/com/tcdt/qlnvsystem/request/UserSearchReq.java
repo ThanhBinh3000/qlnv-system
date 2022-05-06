@@ -9,6 +9,7 @@ public class UserSearchReq {
 	String fullName;
 	String status;
 	String dvql;
+	Long roleId;
 	PaggingReq paggingReq;
 	
 }

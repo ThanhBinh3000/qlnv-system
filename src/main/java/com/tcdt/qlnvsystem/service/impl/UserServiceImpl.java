@@ -158,7 +158,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 		int page = PaginationSet.getPage(req.getPaggingReq().getPage());
 		int limit = PaginationSet.getLimit(req.getPaggingReq().getLimit());
 		Pageable pageable = PageRequest.of(page, limit, Sort.by("id").ascending());
-		return userRepository.selectParams(req.getDvql(), req.getUsername(), req.getFullName(),
+		return userInfoEntityRepository.select(req.getRoleId(), req.getUsername(), req.getFullName(),
 				req.getSysType(), req.getDvql(), req.getStatus(), pageable);
 	}
 	@Override
