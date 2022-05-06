@@ -27,4 +27,19 @@ public class SysPermissionEntity {
 	@Column(length = 50)
 	private String icon;
 	Long parent_id;
+
+	public SysPermissionEntity(Long id, String name, String code, String url, Integer thuTu, String trangThai, String menu, String icon) {
+		this.id = id;
+		this.name = name;
+		this.code = code;
+		this.url = url;
+		this.thuTu = thuTu;
+		this.trangThai = trangThai;
+		this.menu = menu;
+		this.icon = icon;
+	}
+
+	public SysPermissionEntity() {
+
+	}
 }

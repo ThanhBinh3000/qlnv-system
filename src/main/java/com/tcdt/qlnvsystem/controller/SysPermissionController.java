@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.tcdt.qlnvsystem.entities.SysPermissionEntity;
 import com.tcdt.qlnvsystem.enums.EnumResponse;
 import com.tcdt.qlnvsystem.repository.SysPermissionRepository;
 import com.tcdt.qlnvsystem.request.SysPermissionRq;
@@ -58,6 +59,42 @@ public class SysPermissionController extends BaseController{
 		Resp resp = new Resp();
 		try {
 			Iterable<SysPermission> data = sysPermissionRepository.findAllOrderById();
+			resp.setData(data);
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
+		} catch (Exception e) {
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
+			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
+		}
+		return ResponseEntity.ok(resp);
+	}
+
+	@ApiOperation(value = "Lấy danh sách quyền cha của hệ thống", response = List.class, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/ds-quyen-cha", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<Resp> selectAllParent() {
+		Resp resp = new Resp();
+		try {
+			Iterable<SysPermissionEntity> data = sysPermissionRepository.findAllParent();
+			resp.setData(data);
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
+		} catch (Exception e) {
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
+			resp.setMsg(e.getMessage());
+			log.error(e.getMessage());
+		}
+		return ResponseEntity.ok(resp);
+	}
+
+	@ApiOperation(value = "Lấy danh sách quyền cha của hệ thống", response = List.class, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/ds-quyen-con", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<Resp> selectAllChildByParentId(@RequestParam Long parentId) {
+		Resp resp = new Resp();
+		try {
+			Iterable<SysPermissionEntity> data = sysPermissionRepository.findChildByParentId(parentId);
 			resp.setData(data);
 			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
 			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
