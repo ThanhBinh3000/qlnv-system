@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "QLNV_DM")
+@Table(name = "DM_DUNG_CHUNG")
 @Data
 public class QlnvDanhMuc implements Serializable {
 	/**

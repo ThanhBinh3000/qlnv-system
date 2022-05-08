@@ -12,7 +12,7 @@ public interface DanhMucRepository extends CrudRepository<QlnvDanhMuc, Long> {
 
 	@Transactional()
 	@Modifying
-	@Query(value = "UPDATE QLNV_DM SET GIA_TRI=:shgtNext WHERE ma = :ma", nativeQuery = true)
+	@Query(value = "UPDATE DM_DUNG_CHUNG SET GIA_TRI=:shgtNext WHERE ma = :ma", nativeQuery = true)
 	void updateVal(String ma, Long shgtNext);
 
 	QlnvDanhMuc findByMa(String ma);
