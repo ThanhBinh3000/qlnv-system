@@ -26,7 +26,7 @@ public class UserInfoReq extends BaseRequest{
 	String dvql;
 	String token;
 	@NotNull(message = "Không được để trống")
-	@Size(max = 2, message = "sysType phải ít hơn 2 ký tự")
+	@Size(max = 5, message = "sysType phải ít hơn 5 ký tự")
 	String sysType;
 	Long groupId;
 	@Email
