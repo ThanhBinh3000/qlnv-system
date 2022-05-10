@@ -156,7 +156,7 @@ public class UserInfoController extends BaseController {
 	@ApiOperation(value = "Xóa UserInfo", response = List.class, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PostMapping("/delete")
 	@ResponseStatus(HttpStatus.OK)
-	@PreAuthorize("hasRole('SYS_USER_DEL')")
+	/*@PreAuthorize("hasRole('SYS_USER_DEL')")*/
 	//TODO: ten chuc nang + hanh dong
 	public ResponseEntity<Resp> delete(@RequestBody BaseRequest str) throws Exception {
 		Resp resp = new Resp();
