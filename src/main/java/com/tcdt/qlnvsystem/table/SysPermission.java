@@ -2,17 +2,7 @@ package com.tcdt.qlnvsystem.table;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Persister;
 
 @Entity
 @Table(name = "SYS_PERMISSION")
@@ -29,6 +20,10 @@ public class SysPermission {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+    @Transient
+    private Long key;
+    @Transient
+    private String title;
 	@Column(length = 250)
 	private String name;
 	@Column(length = 50)
@@ -53,5 +48,12 @@ public class SysPermission {
 	@JoinColumn(name = "parent_id", referencedColumnName = "id")
 	//@Fetch(value = FetchMode.SUBSELECT)
 	//@JsonIgnoreProperties(value = {"parent"})
-	private List<SysPermission> child;
+	private List<SysPermission> children;
+
+	public Long getKey() {
+		return id;
+	}
+	public String getTitle() {
+		return name;
+	}
 }
