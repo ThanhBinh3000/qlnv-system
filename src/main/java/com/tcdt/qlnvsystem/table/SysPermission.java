@@ -18,7 +18,8 @@ import org.hibernate.annotations.Persister;
 @Data
 public class SysPermission {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "SYS_PERMISSION_SEQ")
+	@SequenceGenerator(sequenceName = "SYS_PERMISSION_SEQ", allocationSize = 1, name = "SYS_PERMISSION_SEQ")
 	private Long id;
     @Transient
     private Long key;
