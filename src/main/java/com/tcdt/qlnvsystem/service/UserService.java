@@ -73,7 +73,7 @@ public interface UserService  {
 	UserInfo modify(UserInfoReq req) throws Exception;
 
 	@Transactional(rollbackOn = Exception.class)
-	void delete(BaseRequest str) throws Exception;
+	void delete(Long id) throws Exception;
 
 	Page<UserInfoEntity> search(UserSearchReq req) throws Exception;
 

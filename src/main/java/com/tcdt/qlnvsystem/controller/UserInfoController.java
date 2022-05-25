@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.tcdt.qlnvsystem.request.UserRolesReq;
+import com.tcdt.qlnvsystem.request.*;
 import com.tcdt.qlnvsystem.service.UserService;
 import com.tcdt.qlnvsystem.table.UserRoles;
 import org.apache.commons.lang3.StringUtils;
@@ -40,9 +40,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.tcdt.qlnvsystem.entities.UserInfoEntity;
 import com.tcdt.qlnvsystem.enums.EnumResponse;
-import com.tcdt.qlnvsystem.request.BaseRequest;
-import com.tcdt.qlnvsystem.request.UserInfoReq;
-import com.tcdt.qlnvsystem.request.UserSearchReq;
 import com.tcdt.qlnvsystem.response.Resp;
 import com.tcdt.qlnvsystem.table.UserInfo;
 import com.tcdt.qlnvsystem.util.Contains;
@@ -158,10 +155,10 @@ public class UserInfoController extends BaseController {
 	@ResponseStatus(HttpStatus.OK)
 	/*@PreAuthorize("hasRole('SYS_USER_DEL')")*/
 	//TODO: ten chuc nang + hanh dong
-	public ResponseEntity<Resp> delete(@RequestBody BaseRequest str) throws Exception {
+	public ResponseEntity<Resp> delete(@RequestBody IdSearchReq id) throws Exception {
 		Resp resp = new Resp();
 		try {
-			userService.delete(str);
+			userService.delete(Long.valueOf(id.getId()));
 			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
 			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
 		} catch (Exception e) {

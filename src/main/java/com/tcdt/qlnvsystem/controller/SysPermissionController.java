@@ -159,7 +159,7 @@ public class SysPermissionController extends BaseController{
 		Resp resp = new Resp();
 		try {
 			Optional<SysPermission> info = this.sysPermissionRepository.findById(req.getId());
-			if (info.isPresent())
+			if (!info.isPresent())
 				throw new UnsupportedOperationException("Không tìm thấy chức năng");
 			SysPermission dataMap = new ModelMapper().map(req, SysPermission.class);
 			updateObjectToObject(info.get(), dataMap);

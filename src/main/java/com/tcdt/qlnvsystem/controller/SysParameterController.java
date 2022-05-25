@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.tcdt.qlnvsystem.enums.EnumResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -127,19 +128,18 @@ public class SysParameterController {
 	public ResponseEntity<Resp> modify(@RequestBody NewSysParamReq req) {
 		Resp resp = new Resp();
 		try {
-			SysParameter param;
-			param = this.sysParameterRepository.findByMa(req.getParamId());
-			if (param == null)
+			Optional<SysParameter> param = this.sysParameterRepository.findById(req.getId());
+			if (!param.isPresent())
 				throw new UnsupportedOperationException("Không tìm thấy tham số");
 
-			param.setMa(req.getParamId());
-			param.setTen(req.getParamName());
-			param.setGiaTri(req.getParamValue());
-			param.setTrangThai(req.getStatus());
-			param.setMoTa(req.getDescription());
+			param.get().setMa(req.getParamId());
+			param.get().setTen(req.getParamName());
+			param.get().setGiaTri(req.getParamValue());
+			param.get().setTrangThai(req.getStatus());
+			param.get().setMoTa(req.getDescription());
 
 			int data = 0;
-			SysParameter dataInfo = this.sysParameterRepository.save(param);
+			SysParameter dataInfo = this.sysParameterRepository.save(param.get());
 			if (dataInfo.getId() > 0)
 				data = 1;
 			resp.setData(data);
@@ -175,6 +175,27 @@ public class SysParameterController {
 		} catch (Exception e) {
 			// TODO: handle exception
 			resp.setStatusCode(Contains.RESP_FAIL);
+			resp.setMsg(e.getMessage());
+		}
+		return ResponseEntity.ok(resp);
+	}
+	@ApiOperation(value = "Xóa Tham số", response = List.class, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping("/delete")
+	@ResponseStatus(HttpStatus.OK)
+	/*@PreAuthorize("hasRole('SYS_USER_DEL')")*/
+	//TODO: ten chuc nang + hanh dong
+	public ResponseEntity<Resp> delete(@RequestBody IdSearchReq req) throws Exception {
+		Resp resp = new Resp();
+		try {
+			Optional<SysParameter> sysParam = sysParameterRepository.findById(Long.valueOf(req.getId()));
+			if (!sysParam.isPresent())
+				throw new Exception("Không tìm thấy tham số cần sửa");
+			sysParameterRepository.delete(sysParam.get());
+			resp.setStatusCode(EnumResponse.RESP_SUCC.getValue());
+			resp.setMsg(EnumResponse.RESP_SUCC.getDescription());
+		} catch (Exception e) {
+			// TODO: handle exception
+			resp.setStatusCode(EnumResponse.RESP_FAIL.getValue());
 			resp.setMsg(e.getMessage());
 		}
 		return ResponseEntity.ok(resp);

@@ -142,15 +142,12 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 		return this.userRepository.save(info);
 	}
 	@Override
-	public void delete(BaseRequest str) throws Exception {
-		if (org.apache.commons.lang3.StringUtils.isBlank(str.getStr()))
+	public void delete(Long id) throws Exception {
+		Optional<UserInfo> info = userRepository.findById(id);
+		if (!info.isPresent())
 			throw new UnsupportedOperationException("delete-user-unknown");
 
-		UserInfo info = userRepository.findByUsername(str.getStr());
-		if (info == null)
-			throw new UnsupportedOperationException("delete-user-unknown");
-
-		userRepository.delete(info);
+		userRepository.delete(info.get());
 	}
 
 	@Override
