@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserInfoReq extends BaseRequest{
+public class UserInfoReq{
 	@ApiModelProperty(notes = "Bắt buộc set đối với update, delete")
 	Long id;
 	@NotNull(message = "Không được để trống")
